@@ -9,6 +9,7 @@
 #![doc = crate::trm_markdown_link!("i2c")]
 
 pub mod master;
+pub mod slave;
 
 #[cfg(soc_has_lp_i2c0)]
 crate::unstable_module! {

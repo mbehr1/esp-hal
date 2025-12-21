@@ -1,6 +1,7 @@
 pub(crate) mod aes;
 pub(crate) mod gpio;
 pub(crate) mod i2c_master;
+pub(crate) mod i2c_slave;
 pub(crate) mod rmt;
 pub(crate) mod rsa;
 pub(crate) mod sha;
@@ -12,6 +13,7 @@ pub(crate) mod uart;
 pub(crate) use aes::*;
 pub(crate) use gpio::*;
 pub(crate) use i2c_master::*;
+pub(crate) use i2c_slave::*;
 pub(crate) use rmt::*;
 pub(crate) use sha::*;
 pub(crate) use soc::*;
@@ -420,10 +422,11 @@ driver_configs![
             fifo_size: u32,
         }
     },
-    I2cSlaveProperties {
+    I2cSlaveProperties<I2cSlaveInstanceConfig> {
         driver: i2c_slave,
         name: "I2C slave",
-        properties: {}
+        properties: {
+        }
     },
     I2sProperties {
         driver: i2s,

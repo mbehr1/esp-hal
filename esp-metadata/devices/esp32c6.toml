@@ -591,7 +591,10 @@ support_status = "partial"
 fifo_size = 16
 
 [device.i2c_slave]
-support_status = "not_supported"
+support_status = "supported"
+instances = [
+    { name = "i2c0", sys_instance = "I2cExt0", scl = "I2CEXT0_SCL", sda = "I2CEXT0_SDA" },
+]
 
 [device.interrupts]
 support_status = "partial"
