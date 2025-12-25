@@ -788,6 +788,8 @@ impl Driver<'_> {
         regs.scl_stretch_conf()
             .modify(|_, w| w.slave_scl_stretch_clr().set_bit());
 
+        set_filter(self.regs(), Some(7), Some(7));
+
         // i2c_ll_update(hal->dev);
         self.update_registers();
 
@@ -822,6 +824,39 @@ impl Driver<'_> {
             w
         });
     }
+}
+
+/// Sets the filter with a supplied threshold in clock cycles for which a
+/// pulse must be present to pass the filter
+fn set_filter(
+    register_block: &RegisterBlock,
+    sda_threshold: Option<u8>,
+    scl_threshold: Option<u8>,
+) {
+    // register_block.sda_filter_cfg().modify(|_, w| {
+    //     if let Some(threshold) = sda_threshold {
+    //         unsafe { w.sda_filter_thres().bits(threshold) };
+    //     }
+    //     w.sda_filter_en().bit(sda_threshold.is_some())
+    // });
+    // register_block.scl_filter_cfg().modify(|_, w| {
+    //     if let Some(threshold) = scl_threshold {
+    //         unsafe { w.scl_filter_thres().bits(threshold) };
+    //     }
+    //     w.scl_filter_en().bit(scl_threshold.is_some())
+    // });
+    // } else {
+    register_block.filter_cfg().modify(|_, w| {
+        if let Some(threshold) = sda_threshold {
+            unsafe { w.sda_filter_thres().bits(threshold) };
+        }
+        if let Some(threshold) = scl_threshold {
+            unsafe { w.scl_filter_thres().bits(threshold) };
+        }
+        w.sda_filter_en().bit(sda_threshold.is_some());
+        w.scl_filter_en().bit(scl_threshold.is_some())
+    });
+    // }
 }
 
 /// reason for receive callback being called
