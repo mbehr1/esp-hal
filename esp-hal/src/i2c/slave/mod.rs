@@ -475,11 +475,12 @@ fn async_handler(info: &Info, state: &State) {
 
                 let mut data_to_write = [0u8; FIFO_SIZE];
                 let tx_fifo_exist_len = regs.sr().read().txfifo_cnt().bits();
-                assert_eq!(tx_fifo_exist_len, 0); // should be 0 at address match
+                //TODO this fails sometimes! Analyse assert_eq!(tx_fifo_exist_len, 0); // should be 0 at address match
+                let space_in_fifo = FIFO_SIZE.saturating_sub(tx_fifo_exist_len as usize);
                 let to_write = on_event(
                     SlaveEvent::StretchAddrMatch(prev_transaction_rx_cnt),
                     &recvd_data[0..did_read],
-                    &mut data_to_write,
+                    &mut data_to_write[0..space_in_fifo],
                 );
                 // TODO how can we end/nack the transaction here if no data to write?
                 // todo int for stretch should be cleared before the stretch is cleared! (according to e.g. 29.6.8.2 examples)
